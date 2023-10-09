@@ -39,14 +39,17 @@ pip install -r requirements-dev.txt
 
 2) Start Django development server
 
-```if migrations are not applied yet
+if migrations are not applied yet
+```
 python manage.py migrate
 ```
 
-```create superuser account (if it is not created yet)
+create superuser account (if it is not created yet)
+```
 python manage.py createsuperuser
 ```
 
+start local development server
 ```
 python manage.py runserver
 ```
