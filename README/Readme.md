@@ -29,15 +29,18 @@ and not in past events.
 
 ## How to Run the API on a Local Computer?
 
-0) Clone this repository to your local computer
+#### Step 1: Clone this repository to your local computer and install all project dependencies
 
-1) Install all project dependencies
-
+cloning git repository:
+```
+git clone https://github.com/alv2017/Events-API.git
+```
+installing dependencies
 ```
 pip install -r requirements-dev.txt
 ```
 
-2) Start Django development server
+#### Step 2: Start Django development server
 
 if migrations are not applied yet
 ```
@@ -54,9 +57,11 @@ start local development server
 python manage.py runserver
 ```
 
-3) Use any API client to access the API endpoints.
+#### Step 3: Use any API client to access the API endpoints.
 
-4) If you want to use Django Admin remember to collect static files
+#### Step 4: If you want to use Django Admin remember to collect static files
+
+Create directory called *static*, and run the command to collect static files
 ```
 python manage.py collectstatic
 ```
