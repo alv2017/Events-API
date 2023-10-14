@@ -112,6 +112,12 @@ class UserEventRegistrationView(views.APIView):
                 detail={"validation error": message}, code="invalid event"
             )
 
+        if not event.is_published:
+            message = "Unable to register: event is not published."
+            raise ValidationError(
+                detail={"validation error": message}, code="invalid event"
+            )
+
         event.registrations.add(user)
         message = f"Your are registered for the event: {event.name}."
         return Response(data={"message": message}, status=status.HTTP_201_CREATED)
