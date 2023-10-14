@@ -86,7 +86,7 @@ class UserRegistrationsListView(generics.ListAPIView):
     name = "user_registrations_view"
     authentication_classes = (JWTAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = EventSerializer
+    serializer_class = EventPreviewSerializer
 
     def get_queryset(self):
         user_id = self.request.user.id
