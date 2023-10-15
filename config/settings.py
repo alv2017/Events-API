@@ -157,10 +157,6 @@ REST_FRAMEWORK = {
     },
 }
 
-if DEBUG:
-    browsable_api_renderer = "rest_framework.renderers.BrowsableAPIRenderer"
-    if browsable_api_renderer not in REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"]:
-        REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(browsable_api_renderer)
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
