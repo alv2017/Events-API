@@ -57,6 +57,11 @@ start local development server
 python manage.py runserver
 ```
 
+It is also possible to run the api using gunicorn server
+```
+gunicorn config.wsgi:application --bind 127.0.0.1:8000 --reload
+```
+
 #### Step 3: Use any API client to access the API endpoints.
 
 #### Step 4: If you want to use Django Admin remember to collect static files
