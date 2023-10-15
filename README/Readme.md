@@ -65,3 +65,23 @@ Create directory called *static*, and run the command to collect static files
 ```
 python manage.py collectstatic
 ```
+
+
+# How to Run a Local Development in Docker?
+
+It is possible to run a local development environmen in a Docker container.
+
+#### Step 1: Build the docker containers
+```
+docker compose build
+```
+
+#### Step2: Start the application
+```
+docker compose up
+```
+
+#### Step3: Stop the application
+```
+docker compose down
+```
