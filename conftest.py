@@ -55,7 +55,9 @@ def another_test_user_data() -> dict:
 @pytest.fixture(scope="function")
 def another_test_db_user(django_user_model, another_test_user_data) -> User:
     try:
-        user = django_user_model.objects.get(username=another_test_user_data["username"])
+        user = django_user_model.objects.get(
+            username=another_test_user_data["username"]
+        )
     except django_user_model.DoesNotExist:
         user = django_user_model.objects.create(**another_test_user_data)
     return user

@@ -113,17 +113,25 @@ class TestUserManagementViews:
     def test_user_create_view_unauthorized_access_is_not_allowed(
         self, api_client, test_user_data
     ):
-        response = api_client.post(self.user_list_create_view_url, data=test_user_data, format="json")
+        response = api_client.post(
+            self.user_list_create_view_url, data=test_user_data, format="json"
+        )
         assert response.status_code == 401
 
-    def test_user_create_view_regular_user_access_is_forbidden(self, user_api_client, test_user_data):
+    def test_user_create_view_regular_user_access_is_forbidden(
+        self, user_api_client, test_user_data
+    ):
         api_client = user_api_client
-        response = api_client.post(self.user_list_create_view_url, data=test_user_data, format="json")
+        response = api_client.post(
+            self.user_list_create_view_url, data=test_user_data, format="json"
+        )
         assert response.status_code == 403
 
     def test_user_create_view_admin_access(self, admin_api_client, test_user_data):
         api_client = admin_api_client
-        response = api_client.post(self.user_list_create_view_url, data=test_user_data, format="json")
+        response = api_client.post(
+            self.user_list_create_view_url, data=test_user_data, format="json"
+        )
         created_user = response.data
         assert response.status_code == 201
         assert created_user["username"] == test_user_data["username"]
@@ -144,20 +152,28 @@ class TestUserManagementViews:
         assert response.status_code == 200
 
     def test_user_update_view_unauthorized_access_is_not_allowed(self, api_client):
-        response = api_client.put(self.user_retrieve_update_delete_view_url(1), data={}, format="json")
+        response = api_client.put(
+            self.user_retrieve_update_delete_view_url(1), data={}, format="json"
+        )
         assert response.status_code == 401
 
     def test_user_update_view_regular_user_access_is_forbidden(self, user_api_client):
         api_client = user_api_client
-        response = api_client.put(self.user_retrieve_update_delete_view_url(1), data={}, format="json")
+        response = api_client.put(
+            self.user_retrieve_update_delete_view_url(1), data={}, format="json"
+        )
         assert response.status_code == 403
 
     def test_user_update_view_admin_access(self, admin_api_client):
         api_client = admin_api_client
-        response = api_client.put(self.user_retrieve_update_delete_view_url(1), data={}, format="json")
+        response = api_client.put(
+            self.user_retrieve_update_delete_view_url(1), data={}, format="json"
+        )
         assert response.status_code == 200
 
-    def test_user_update_view_with_data(self, admin_api_client, test_db_user, updated_user_data, django_user_model):
+    def test_user_update_view_with_data(
+        self, admin_api_client, test_db_user, updated_user_data, django_user_model
+    ):
         api_client = admin_api_client
         updated_user_data["username"] = "updated_user_name"
         user_id = test_db_user.id
@@ -171,8 +187,11 @@ class TestUserManagementViews:
         assert not check_password(updated_user_data["password"], user.password)
 
         # Update
-        response = api_client.put(self.user_retrieve_update_delete_view_url(test_db_user.id),
-                                  data=updated_user_data, format="json")
+        response = api_client.put(
+            self.user_retrieve_update_delete_view_url(test_db_user.id),
+            data=updated_user_data,
+            format="json",
+        )
         assert response.status_code == 200
 
         # DB data after update
@@ -183,8 +202,12 @@ class TestUserManagementViews:
         assert user.email == updated_user_data["email"]
         assert check_password(updated_user_data["password"], user.password)
 
-    def test_user_delete_view_unauthorized_access_is_not_allowed(self, api_client, test_db_user):
-        response = api_client.delete(self.user_retrieve_update_delete_view_url(test_db_user.id))
+    def test_user_delete_view_unauthorized_access_is_not_allowed(
+        self, api_client, test_db_user
+    ):
+        response = api_client.delete(
+            self.user_retrieve_update_delete_view_url(test_db_user.id)
+        )
         assert response.status_code == 401
 
     def test_user_delete_view_regular_user_access_is_forbidden(self, user_api_client):
@@ -194,5 +217,7 @@ class TestUserManagementViews:
 
     def test_user_delete_view_admin_access(self, admin_api_client, test_db_user):
         api_client = admin_api_client
-        response = api_client.delete(self.user_retrieve_update_delete_view_url(test_db_user.id))
+        response = api_client.delete(
+            self.user_retrieve_update_delete_view_url(test_db_user.id)
+        )
         assert response.status_code == 204

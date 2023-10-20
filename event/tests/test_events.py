@@ -4,10 +4,13 @@ from django.utils import timezone
 from rest_framework.fields import DateTimeField
 
 from ..models import Event
-from ..views import EventListCreateView, EventRetrieveUpdateDestroyView
-from ..views import UserEventsView
-from ..views import UserRegistrationsListView, UserEventRegistrationView
-
+from ..views import (
+    EventListCreateView,
+    EventRetrieveUpdateDestroyView,
+    UserEventRegistrationView,
+    UserEventsView,
+    UserRegistrationsListView,
+)
 
 drf_string_to_datetime = DateTimeField().to_internal_value
 drf_datetime_to_string = DateTimeField().to_representation
@@ -26,7 +29,9 @@ class TestEventListCreateView:
         response = api_client.get(path=self.url)
         assert response.status_code == 200
 
-    def test_event_list_displays_only_published_events(self, user_api_client, db_events):
+    def test_event_list_displays_only_published_events(
+        self, user_api_client, db_events
+    ):
         api_client = user_api_client
         response = api_client.get(path=self.url)
         assert response.status_code == 200
@@ -101,8 +106,9 @@ class TestEventRetrieveUpdatedDestroyView:
         response = api_client.patch(url)
         assert response.status_code == 401
 
-    def test_event_update_view_modification_of_events_of_others_is_not_allowed(self, test_db_user, another_test_db_user,
-                                                                         db_events_of_other, user_api_client):
+    def test_event_update_view_modification_of_events_of_others_is_not_allowed(
+        self, test_db_user, another_test_db_user, db_events_of_other, user_api_client
+    ):
         api_client = user_api_client
         # Event that we will try to update
         event_id = 1
@@ -139,8 +145,9 @@ class TestEventRetrieveUpdatedDestroyView:
         response = api_client.delete(url)
         assert response.status_code == 401
 
-    def test_event_delete_view_deletion_of_events_of_others_is_not_allowed(self, test_db_user, another_test_db_user,
-                                                                  db_events_of_other, user_api_client):
+    def test_event_delete_view_deletion_of_events_of_others_is_not_allowed(
+        self, test_db_user, another_test_db_user, db_events_of_other, user_api_client
+    ):
         api_client = user_api_client
 
         # Event that we will try to delete
@@ -185,7 +192,9 @@ class TestUserEventsView:
         assert response.status_code == 200
         assert len(response.data) == 0
 
-    def test_user_events_view_with_user_created_events(self, test_db_user, user_api_client, db_events):
+    def test_user_events_view_with_user_created_events(
+        self, test_db_user, user_api_client, db_events
+    ):
         n = Event.objects.filter(arranged_by=test_db_user).count()
         assert n > 0
         api_client = user_api_client
@@ -201,7 +210,9 @@ class TestUserRegistrationsListView:
     view = UserRegistrationsListView
     url = reverse(view.name)
 
-    def test_user_registrations_list_view_unauth_access_is_not_allowed(self, api_client):
+    def test_user_registrations_list_view_unauth_access_is_not_allowed(
+        self, api_client
+    ):
         response = api_client.get(self.url)
         assert response.status_code == 401
 
@@ -211,8 +222,13 @@ class TestUserRegistrationsListView:
         assert response.status_code == 200
         assert len(response.data) == 0
 
-    def test_user_registrations_list_not_empty(self, another_test_db_user, test_db_user,
-                                               db_events_of_other_with_registrations, user_api_client):
+    def test_user_registrations_list_not_empty(
+        self,
+        another_test_db_user,
+        test_db_user,
+        db_events_of_other_with_registrations,
+        user_api_client,
+    ):
         api_client = user_api_client
         response = api_client.get(self.url)
         assert response.status_code == 200
@@ -232,7 +248,9 @@ class TestUserEventRegistrationView:
         response = api_client.post(url, data={})
         assert response.status_code == 401
 
-    def test_registration_for_event_arranged_by_me(self, test_db_user, db_events, user_api_client):
+    def test_registration_for_event_arranged_by_me(
+        self, test_db_user, db_events, user_api_client
+    ):
         api_client = user_api_client
         # Before registration
         event_id = 1
@@ -249,8 +267,9 @@ class TestUserEventRegistrationView:
         assert event.registrations.count() == 1
         assert test_db_user in event.registrations.all()
 
-    def test_register_for_event_arranged_by_other(self, test_db_user, another_test_db_user, db_events_of_other,
-                                                  user_api_client):
+    def test_register_for_event_arranged_by_other(
+        self, test_db_user, another_test_db_user, db_events_of_other, user_api_client
+    ):
         api_client = user_api_client
 
         # Before registration
@@ -270,13 +289,16 @@ class TestUserEventRegistrationView:
         assert event.registrations.count() == 1
         assert test_db_user in event.registrations.all()
 
-    def test_cancel_registration_for_event_unauth_access_is_not_allowed(self, api_client):
+    def test_cancel_registration_for_event_unauth_access_is_not_allowed(
+        self, api_client
+    ):
         url = self.get_url(event_id=1)
         response = api_client.delete(url)
         assert response.status_code == 401
 
-    def test_cancel_registration_for_event_arranged_by_me(self, test_db_user, user_api_client,
-                                                          db_events_of_owner_with_registrations):
+    def test_cancel_registration_for_event_arranged_by_me(
+        self, test_db_user, user_api_client, db_events_of_owner_with_registrations
+    ):
         api_client = user_api_client
 
         # Before registration cancellation
@@ -293,9 +315,13 @@ class TestUserEventRegistrationView:
         event = Event.objects.get(pk=event_id)
         assert test_db_user not in event.registrations.all()
 
-    def test_cancel_registration_for_event_arranged_by_other(self, test_db_user, another_test_db_user,
-                                                             user_api_client,
-                                                             db_events_of_other_with_registrations):
+    def test_cancel_registration_for_event_arranged_by_other(
+        self,
+        test_db_user,
+        another_test_db_user,
+        user_api_client,
+        db_events_of_other_with_registrations,
+    ):
         api_client = user_api_client
 
         # Before registration cancellation

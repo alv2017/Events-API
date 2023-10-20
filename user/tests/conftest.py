@@ -10,6 +10,6 @@ def updated_user_data(django_user_model) -> dict:
         "first_name": "updated_first_name",
         "last_name": "updated_last_name",
         "email": "updated_email@test.com",
-        "password": "updated_password"
+        "password": "updated_password",
     }
     return user_data
