@@ -25,6 +25,8 @@ and not in past events.
 ## Implemented Extras
 
 1) Events filtering: by date, by query parameter t (future events, today's events, past events).
+2) Unit tests added.
+3) GitHub Actions pipeline added: basic_code_checks.yml
 
 
 ## How to Run the API on a Local Computer?
