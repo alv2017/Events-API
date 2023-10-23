@@ -108,8 +108,13 @@ class UserEventRegistrationView(views.APIView):
         event_id = self.kwargs["event_id"]
         event = get_object_or_404(Event.objects.all(), pk=event_id)
 
-        if event.start <= timezone.now():
-            message = "Unable to register: event is over."
+        if event.registration_deadline:
+            registration_deadline = event.registration_deadline
+        else:
+            registration_deadline = event.start
+
+        if registration_deadline <= timezone.now():
+            message = "Unable to register: event registration is over."
             raise ValidationError(
                 detail={"validation error": message}, code="invalid event"
             )

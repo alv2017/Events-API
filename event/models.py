@@ -38,6 +38,9 @@ class Event(models.Model):
     )
     start = models.DateTimeField()
     end = models.DateTimeField()
+    registration_deadline = models.DateTimeField(
+        _("Registration Deadline"), blank=True, null=True
+    )
     arranged_by = models.ForeignKey(
         User,
         null=True,
