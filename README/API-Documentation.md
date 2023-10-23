@@ -213,6 +213,17 @@ In case of success the response body will contain a list of all published events
 Successful Response Status Code: 200
 ```
 
+The endpoint support the query parameter *t*. For example, the endpoint below will return future events only:
+```
+/api/v1/event/events/?t=future
+```
+
+**Available Options**
+- t=today: returns today's events, this includes published events only;
+- t=past: returns past events, this includes published events only;
+- t=future: returns future events, this includes published events only;
+- t=all: returns all the events, published and unpublished.
+
 #### 4.3 Event Details [+]
 ```
 Method: GET
