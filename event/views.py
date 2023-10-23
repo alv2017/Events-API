@@ -33,6 +33,8 @@ class EventListCreateView(generics.ListCreateAPIView):
                 qs = Event.past_events.all()
             elif t == "future":
                 qs = Event.future_events.all()
+            elif t == "all":
+                qs = Event.objects.all()
             else:
                 qs = Event.published_events.all()
         return qs
