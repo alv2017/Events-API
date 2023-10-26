@@ -4,7 +4,6 @@ from pathlib import Path
 
 import dj_database_url
 import environ
-
 from django.apps import apps
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -88,7 +87,6 @@ TEMPLATES = [
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-
     "formatters": {
         "regular": {
             "format": "{asctime}: {levelname}: {name}: {process}: {module}: {filename}: {message}",
@@ -99,48 +97,43 @@ LOGGING = {
             "style": "{",
         },
     },
-
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
-            "formatter": "regular"
+            "formatter": "regular",
         },
-
         "log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
             "formatter": "regular",
             "filename": env("LOG_DEFAULT"),
             "when": "midnight",
-            "backupCount": 15
+            "backupCount": 15,
         },
-
         "authlog": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
             "formatter": "regular",
             "filename": env("LOG_AUTH"),
             "when": "midnight",
-            "backupCount": 15
+            "backupCount": 15,
         },
     },
-
     "loggers": {
         "": {
             "handlers": ["log"],
             "level": "INFO",
             "propagate": True,
-            "description": "Captures log records from all loggers."
+            "description": "Captures log records from all loggers.",
         },
         "auth": {
             "handlers": ["authlog"],
             "level": "INFO",
             "propagate": False,
-            "description": "Captures log records from user app"
-        }
+            "description": "Captures log records from user app",
+        },
     },
-
 }
 
 WSGI_APPLICATION = "config.wsgi.application"
