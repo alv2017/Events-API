@@ -14,7 +14,6 @@ LABEL name=EventsAPI
 WORKDIR /usr/src/app
 
 # Create log directory
-RUN echo $LOG_DIR
 RUN mkdir -p $LOG_DIR
 
 # Install dependencies
