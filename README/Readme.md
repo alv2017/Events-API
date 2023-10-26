@@ -27,6 +27,9 @@ and not in past events.
 1) Events filtering: by date, by query parameter t (future events, today's events, past events).
 2) Unit tests added.
 3) GitHub Actions pipeline added: basic_code_checks.yml
+4) Logging added:
+    - log everything to a default log file (env. variable $LOG_DEFAULT);
+    - log failed login attempts to auth log file (env. variable $LOG_AUTH)
 
 
 ## How to Run the API on a Local Computer?

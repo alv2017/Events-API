@@ -4,6 +4,7 @@ from pathlib import Path
 
 import dj_database_url
 import environ
+from django.apps import apps
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,6 +20,8 @@ env = environ.Env(
     ALLOWED_HOSTS=(str, "*"),
     ENABLE_HTTPS=(bool, False),
     DB_URL=(str, f"sqlite:////{os.path.join(BASE_DIR, 'events.sqlite3')}"),
+    LOG_DEFAULT=(str, "/dev/stdout"),
+    LOG_AUTH=(str, "/dev/stdout"),
 )
 
 # Take environment variables from .env file
@@ -39,6 +42,7 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split()
 
 INSTALLED_APPS = [
     # Application
+    "auth.apps.AuthConfig",
     "user.apps.UserConfig",
     "event.apps.EventConfig",
     # Django Built-ins
@@ -81,6 +85,58 @@ TEMPLATES = [
         },
     },
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "regular": {
+            "format": "{asctime}: {levelname}: {name}: {process}: {module}: {filename}: {message}",
+            "style": "{",
+        },
+        "short": {
+            "format": "{asctime}: {levelname}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "regular",
+        },
+        "log": {
+            "level": "DEBUG",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "regular",
+            "filename": env("LOG_DEFAULT"),
+            "when": "midnight",
+            "backupCount": 15,
+        },
+        "authlog": {
+            "level": "DEBUG",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "regular",
+            "filename": env("LOG_AUTH"),
+            "when": "midnight",
+            "backupCount": 15,
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["log"],
+            "level": "INFO",
+            "propagate": True,
+            "description": "Captures log records from all loggers.",
+        },
+        "auth": {
+            "handlers": ["authlog"],
+            "level": "INFO",
+            "propagate": False,
+            "description": "Captures log records from user app",
+        },
+    },
+}
 
 WSGI_APPLICATION = "config.wsgi.application"
 
