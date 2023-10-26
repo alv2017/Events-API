@@ -2,7 +2,11 @@ version: '3.8'
 
 services:
   api:
-    build: .
+    container_name: events_api
+    build:
+      context: .
+      args:
+        - LOG_DIR
     command: "gunicorn config.wsgi:application --bind 0.0.0.0:8000 --reload"
     ports:
       - "127.0.0.1:8000:8000"
@@ -10,3 +14,4 @@ services:
       - ./.env
     volumes:
       - .:/usr/src/app
+      - $LOG_DIR:$LOG_DIR
