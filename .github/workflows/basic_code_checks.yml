@@ -26,6 +26,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: create log file
+        - uses: actions/checkout@v2
+        - uses: 1arp/create-a-file-action@0.3
+          with:
+            path: "tmp"
+            file: "tmp.log"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

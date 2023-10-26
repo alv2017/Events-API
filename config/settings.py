@@ -20,8 +20,8 @@ env = environ.Env(
     ALLOWED_HOSTS=(str, "*"),
     ENABLE_HTTPS=(bool, False),
     DB_URL=(str, f"sqlite:////{os.path.join(BASE_DIR, 'events.sqlite3')}"),
-    LOG_DEFAULT=(str, "/var/log/log.log"),
-    LOG_AUTH=(str, "/var/log/authlog.log"),
+    LOG_DEFAULT=(str, "log.log"),
+    LOG_AUTH=(str, "auth.log"),
 )
 
 # Take environment variables from .env file
