@@ -1,16 +1,21 @@
 FROM python:3.11.6-slim-bullseye
 
+ARG LOG_DIR
+
 # Env. variables
-ENV APP=EventsAPI
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Labels
 LABEL type=application
-LABEL name=$APP
+LABEL name=EventsAPI
 
 # Set work directory
 WORKDIR /usr/src/app
+
+# Create log directory
+RUN echo $LOG_DIR
+RUN mkdir -p $LOG_DIR
 
 # Install dependencies
 RUN apt-get update
