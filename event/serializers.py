@@ -30,6 +30,13 @@ class EventSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id", "arranged_by", "created_on", "updated_on")
 
+    def validate(self, data):
+        if "start" in data and "end" in data and data["start"] > data["end"]:
+            raise serializers.ValidationError(
+                "Start date must occur before the end date."
+            )
+        return data
+
 
 class EventPreviewSerializer(serializers.ModelSerializer):
     class Meta:
