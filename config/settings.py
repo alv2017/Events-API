@@ -138,6 +138,17 @@ LOGGING = {
     },
 }
 
+if DEBUG:
+    LOGGING["loggers"].update(
+        {
+            "django.db.backends": {
+                "handlers": ["console"],
+                "level": "DEBUG",
+                "description": "SQL query logger"
+            }
+        }
+    )
+
 WSGI_APPLICATION = "config.wsgi.application"
 
 AUTHENTICATION_BACKENDS = [
