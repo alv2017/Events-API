@@ -41,6 +41,7 @@ class Event(models.Model):
     registration_deadline = models.DateTimeField(
         _("Registration Deadline"), blank=True, null=True
     )
+    number_of_seats = models.IntegerField(_("Number of seats"), default=0)
     arranged_by = models.ForeignKey(
         User,
         null=True,
@@ -71,6 +72,10 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.start.strftime('%Y-%m-%d')}, {self.start.strftime('%H:%M')}, {self.name}"
+
+    @property
+    def total_registrations(self):
+        return self.registrations.count()
 
 
 class EventRegistration(models.Model):
