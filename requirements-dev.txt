@@ -6,3 +6,4 @@ black
 coverage
 flake8
 isort
+django-debug-toolbar
