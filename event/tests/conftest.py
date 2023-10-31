@@ -14,6 +14,7 @@ def events_data():
             "description": "Event in the future",
             "start": timezone.now() + timedelta(days=1),
             "end": timezone.now() + timedelta(days=1, hours=4),
+            "number_of_seats": 1,
             "is_published": True,
         },
         "past_event": {
@@ -77,5 +78,15 @@ def db_events_of_owner_with_registrations(test_db_user, events_data):
     for event_data in events_data.values():
         event = Event.objects.create(**event_data, arranged_by=test_db_user)
         event.registrations.add(test_db_user)
+        events.append(event)
+    return events
+
+
+@pytest.fixture
+def db_events_with_registrations(another_test_db_user, test_db_user, events_data):
+    events = []
+    for event_data in events_data.values():
+        event = Event.objects.create(**event_data, arranged_by=test_db_user)
+        event.registrations.add(another_test_db_user)
         events.append(event)
     return events

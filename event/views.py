@@ -1,3 +1,5 @@
+import math
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import filters, generics, permissions, status, views, viewsets
@@ -108,6 +110,15 @@ class UserEventRegistrationView(views.APIView):
         event_id = self.kwargs["event_id"]
         event = get_object_or_404(Event.objects.all(), pk=event_id)
 
+        # user is already registered for the event
+        if user in event.registrations.all():
+            message = "You are already registered for this event"
+            raise ValidationError(
+                detail={"registration error": message},
+                code="registration_already_exists",
+            )
+
+        # event registration deadline exceeded
         if event.registration_deadline:
             registration_deadline = event.registration_deadline
         else:
@@ -116,13 +127,24 @@ class UserEventRegistrationView(views.APIView):
         if registration_deadline <= timezone.now():
             message = "Unable to register: event registration is over."
             raise ValidationError(
-                detail={"validation error": message}, code="invalid event"
+                detail={"registration error": message}, code="registration_is_over"
             )
 
+        # event is not published
         if not event.is_published:
             message = "Unable to register: event is not published."
             raise ValidationError(
-                detail={"validation error": message}, code="invalid event"
+                detail={"registration error": message},
+                code="registration_for_unpublished_event",
+            )
+
+        # event is fully booked
+        seats_available = event.number_of_seats or math.inf
+        if event.total_registrations >= seats_available:
+            message = "No more registrations accepted, event is fully booked"
+            raise ValidationError(
+                detail={"registration error": message},
+                code="registration_for_fully_booked_event",
             )
 
         event.registrations.add(user)

@@ -255,7 +255,7 @@ class TestUserEventRegistrationView:
         # Before registration
         event_id = 1
         event = Event.objects.get(pk=event_id)
-        assert event.registrations.count() == 0
+        assert event.total_registrations == 0
 
         # Registration for event
         url = self.get_url(event_id=1)
@@ -288,6 +288,58 @@ class TestUserEventRegistrationView:
         event = Event.objects.get(pk=event_id)
         assert event.registrations.count() == 1
         assert test_db_user in event.registrations.all()
+
+    def test_registration_for_event_the_user_already_registered_for_is_not_allowed(
+        self, test_db_user, db_events_of_owner_with_registrations, user_api_client
+    ):
+        api_client = user_api_client
+        event = Event.objects.get(pk=1)
+        url = self.get_url(event_id=1)
+        assert test_db_user in event.registrations.all()
+        response = api_client.post(url, data={})
+        assert response.status_code == 400
+        assert "registration error" in response.data
+        registration_error = response.data["registration error"]
+        assert registration_error.code == "registration_already_exists"
+
+    def test_registration_for_passed_event_is_not_allowed(
+        self, test_db_user, db_events, user_api_client
+    ):
+        api_client = user_api_client
+        event = Event.objects.get(name="Past Event")
+        url = self.get_url(event_id=event.id)
+        assert event.start < timezone.now()
+        response = api_client.post(url, data={})
+        assert response.status_code == 400
+        assert "registration error" in response.data
+        registration_error = response.data["registration error"]
+        assert registration_error.code == "registration_is_over"
+
+    def test_registration_for_unpublished_event_is_not_allowed(
+        self, test_db_user, db_events, user_api_client
+    ):
+        api_client = user_api_client
+        event = Event.objects.get(name="Unpublished Event")
+        url = self.get_url(event_id=event.id)
+        assert event.is_published == False
+        response = api_client.post(url, data={})
+        assert response.status_code == 400
+        assert "registration error" in response.data
+        registration_error = response.data["registration error"]
+        assert registration_error.code == "registration_for_unpublished_event"
+
+    def test_registrations_for_event_when_number_of_seats_reached_limit_is_not_allowed(
+        self, test_db_user, db_events_with_registrations, user_api_client
+    ):
+        api_client = user_api_client
+        event = Event.objects.get(name="Future Event")
+        assert event.total_registrations == event.number_of_seats
+        url = self.get_url(event_id=event.id)
+        response = api_client.post(url, data={})
+        assert response.status_code == 400
+        assert "registration error" in response.data
+        registration_error = response.data["registration error"]
+        assert registration_error.code == "registration_for_fully_booked_event"
 
     def test_cancel_registration_for_event_unauth_access_is_not_allowed(
         self, api_client
