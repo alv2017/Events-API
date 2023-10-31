@@ -95,3 +95,17 @@ docker compose up
 ```
 docker compose down
 ```
+
+# Swagger UI Documentation
+
+In DEBUG mode it is possible to access Swagger API Documentation:
+
+URL: /api/v1/schema/swagger-ui/
+
+After the API code is updated, the Swagger-UI documentation needs to be updated as well. In order to do so,
+you will need to update the API schema:
+```
+python manage.py spectacular --color --file schema.yml
+```
+Please note, that Swagger-UI documentation was added for testing and debug purposes, it shouldn't
+show up in production.

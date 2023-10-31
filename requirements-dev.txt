@@ -2,6 +2,7 @@
 pytest==7.4.2
 pytest-django==4.5.2
 setuptools==68.2.2
+drf-spectacular[sidecar]==0.26.5
 black
 coverage
 flake8
