@@ -8,27 +8,44 @@ from django.utils.translation import gettext_lazy as _
 User = get_user_model()
 
 
-class PublishedEventsManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_published=True)
+class EventQuerySet(models.QuerySet):
+    def published_events(self):
+        return self.filter(is_published=True)
 
+    def unpublished_events(self):
+        return self.filter(is_published=False)
 
-class TodayEventsManager(models.Manager):
-    def get_queryset(self):
+    def today_events(self):
         ct = timezone.now()
-        return super().get_queryset().filter(start__date=ct.date(), is_published=True)
+        return self.filter(start__date=ct.date(), is_published=True)
 
-
-class PastEventsManager(models.Manager):
-    def get_queryset(self):
+    def past_events(self):
         ct = timezone.now()
-        return super().get_queryset().filter(start__lt=ct, is_published=True)
+        return self.filter(start__lt=ct, is_published=True)
 
-
-class FutureEventsManager(models.Manager):
-    def get_queryset(self):
+    def future_events(self):
         ct = timezone.now()
-        return super().get_queryset().filter(start__gt=ct, is_published=True)
+        return self.filter(start__gt=ct, is_published=True)
+
+
+class EventManager(models.Manager):
+    def get_queryset(self):
+        return EventQuerySet(self.model, using=self._db)
+
+    def published_events(self):
+        return self.get_queryset().published_events()
+
+    def unpublished_events(self):
+        return self.get_queryset().unpublished_events()
+
+    def today_events(self):
+        return self.get_queryset().today_events()
+
+    def past_events(self):
+        return self.get_queryset().past_events()
+
+    def future_events(self):
+        return self.get_queryset().future_events()
 
 
 class Event(models.Model):
@@ -60,10 +77,7 @@ class Event(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
-    today_events = TodayEventsManager()
-    past_events = PastEventsManager()
-    future_events = FutureEventsManager()
-    published_events = PublishedEventsManager()
+    events = EventManager()
 
     class Meta:
         verbose_name = "Event"

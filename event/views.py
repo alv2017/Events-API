@@ -26,20 +26,19 @@ class EventListCreateView(generics.ListCreateAPIView):
     ordering = ["-start"]
 
     def get_queryset(self):
-        qs = Event.objects.all()
-        if self.request.method == "GET":
-            t = self.request.query_params.get("t")
-            if t == "today":
-                qs = Event.today_events.all()
-            elif t == "past":
-                qs = Event.past_events.all()
-            elif t == "future":
-                qs = Event.future_events.all()
-            elif t == "all":
-                qs = Event.objects.all()
-            else:
-                qs = Event.published_events.all()
-        return qs
+        qs = Event.events.all()
+        t = self.request.query_params.get("t")
+        if t == "today":
+            qs = Event.events.today_events()
+        elif t == "past":
+            qs = Event.events.past_events()
+        elif t == "future":
+            qs = Event.events.future_events()
+        elif t == "all":
+            qs = qs
+        else:
+            qs = Event.events.published_events()
+        return qs.select_related("arranged_by").prefetch_related("registrations")
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
@@ -83,7 +82,11 @@ class UserEventsView(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         user = get_object_or_404(User.objects.all(), pk=user_id)
-        return user.events.all()
+        return (
+            user.events.all()
+            .select_related("arranged_by")
+            .prefetch_related("registrations")
+        )
 
 
 class UserRegistrationsListView(generics.ListAPIView):
@@ -95,7 +98,11 @@ class UserRegistrationsListView(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         user = get_object_or_404(User.objects.all(), pk=user_id)
-        return user.registrations.all()
+        return (
+            user.registrations.all()
+            .select_related("arranged_by")
+            .prefetch_related("registrations")
+        )
 
 
 class UserEventRegistrationView(views.APIView):
