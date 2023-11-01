@@ -30,6 +30,9 @@ and not in past events.
 4) Logging added:
     - log everything to a default log file (env. variable $LOG_DEFAULT);
     - log failed login attempts to auth log file (env. variable $LOG_AUTH)
+5) Added logic to manage an event capacity: if event reaches maximum number of registered attendees,
+an error is returned to a user trying to register.
+6) Interactive API docs added (Swagger-UI). The interactive documentation is accessible in DEBUG mode only.
 
 
 ## How to Run the API on a Local Computer?
